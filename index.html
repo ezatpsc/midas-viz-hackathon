@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<!--
+    SIGMA Front End
+    This is meant to be a standards-compliant HTML5 document
+    Without the use of custom tags
+        Due to concerns about backwards-compatibility
+    And without default mimetype declarations
+        Due to concerns about readability and concision
+-->
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>SIGMA - Strategic Integrated Geospatial Mapping Application</title>
+    <link rel="icon" href="./images/favicon.png">
+    <link rel="stylesheet" href="./css/main.css">
+    
+    <!-- Allow Pinch Zooming -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="./Leaflet/leaflet.css">
+    <script src="./Leaflet/leaflet.js"></script>
+    
+    <!-- insert plugins here -->
+    
+    <!-- Zoom slider -->
+    <link rel="stylesheet" href="./Leaflet.zoomslider/L.Control.Zoomslider.css">
+    <script src="./Leaflet.zoomslider/L.Control.Zoomslider.js"></script>
+    
+</head>
+<body>
+    <div id="map"></div>   
+    <script>
+    /* BEGIN Tile Layer Definitions */
+    if (! L.Browser.retina) {
+        var OpenStreetMap_Mapnik_Insecure = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            noWrap: true,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            // https: also suppported.
+        });
+    } else {
+        var OpenStreetMap_Mapnik_Insecure = L.tileLayer('http://gpstrails.info/ex/tileserver/mbtiles-server-test4.php?db=osm.mbtiles&z={z}&x={x}&y={y}', {
+            maxZoom: 16,
+            noWrap: true,
+            detectRetina: true,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        });
+    }
+
+    var CartoDB_DarkMatter_Insecure = L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}'+(L.Browser.retina? '@2x': '')+'.png', {
+        maxZoom: 19,
+        noWrap: true,
+        subdomains: 'abcd',
+        detectRetina: true,
+        //errorTileUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAJOgAACToAYJjBRwAAAAMSURBVBhXY2BgYAAAAAQAAVzN/2kAAAAASUVORK5CYII=',
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
+    });
+    /*   END Tile Layer Definitions */
+    
+    // map defaults
+    var default_basemap = [OpenStreetMap_Mapnik_Insecure];
+    var BaltimoreMD = [39.2861, -76.6296];
+    var default_location = BaltimoreMD;
+    var default_zoom = 12;
+    
+    // initialize the map
+    var map = L.map('map', {
+        layers: default_basemap,
+        center: default_location,
+        zoomControl: false,
+        zoom: default_zoom
+    });
+    
+    // add a zoom slider
+    var map_zoom = map.addControl(new L.Control.Zoomslider());
+
+    // add a scale
+    var map_scale = L.control.scale({position: 'bottomleft'}).addTo(map);
+    
+
+    
+    //var map = new L.Map('map', {layers: default_basemaps, center: new L.LatLng(39.2861, -76.6296), zoom: 12});
+    
+
+
+    </script>
+</body>
+</html>
