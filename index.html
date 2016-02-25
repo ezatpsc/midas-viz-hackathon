@@ -35,8 +35,9 @@
 <body>
     <div id="map"></div>
     
-    <script src="data/us_counties_20m.js"></script> <!-- US County Data -->
-    <script src="data/us_states_20m.js"></script> <!-- US State Data -->
+    <script src="data/us_counties_20m.js"></script> <!-- US County Borders -->
+    <script src="data/us_states_20m.js"></script> <!-- US State Borders -->
+    <script src="data/county-pretty-print.js"></script> <!-- County Data -->
     
     <script>
     /* BEGIN Tile Layer Definitions */
@@ -121,14 +122,21 @@
     /*   END RANDOM COLOR FUNCTION */
     
     
+    function blank_style(feature) {
+        return {
+            weight: 0,
+            fill: false
+        };
+    }
+
     function example_style(feature) {
-    return {
-        fillColor: getRandomColor(),
-        weight: 0,
-        opacity: 1,
-        color: 'silver',
-        dashArray: '3',
-        fillOpacity: 0.92
+        return {
+            fillColor: getRandomColor(),
+            weight: 0,
+            opacity: 1,
+            color: 'silver',
+            dashArray: '3',
+            fillOpacity: 0.92
         };
     }
     
@@ -142,16 +150,47 @@
         };
     }
     
+    function getRandomYear() {
+        return Math.floor(Math.random() * (2014 - 2002 + 1)) + 2002;
+    }
+    
     function onEachCounty(feature, layer) {
+        /*
+        feature.properties.time = getRandomYear();
+        layer.bindPopup(feature.properties.NAME + "\n" + feature.properties.time);
+        */
+    }
+
+    function onEachAdditionalCounty(feature, layer) {
+        /*layer.bindPopup(feature.properties.NAME + "\n" + feature.properties.time);*/
+        //feature.properties.time = getRandomYear();
+        feature.properties.time = i
+        //feature.properties.deathrate = county_data['county-data'][feature.properties.GEOID][i]['deathrate'];
+        layer.addTo(map_us_counties);
         layer.bindPopup(feature.properties.NAME + "\n" + feature.properties.time);
     }
 
+    
     /* Generate a random year for every county as an example */
+    /*
     us_counties.features.forEach(function (item) {
         item.properties.time = Math.floor(Math.random() * (2014 - 2002 + 1)) + 2002;
-    })
+    });
+    */
     
+    
+    /*
     var map_us_counties = new L.geoJson(us_counties, {style: example_style, onEachFeature: onEachCounty}).addTo(map);   // add US counties
+    
+    var map_us_counties_1 = new L.geoJson(us_counties, {style: example_style, onEachFeature: onEachAdditionalCounty});
+    */
+    var i;
+    var counties_per_year = {};
+    var map_us_counties = new L.geoJson(us_counties, {style: blank_style, onEachFeature: onEachCounty}).addTo(map);
+    /*var map_us_counties = new L.geoJson(us_counties, {style: blank_style, onEachFeature: onEachCounty}).addTo(map);*/
+    for (i = 2002; i < 2015; i++) {
+        counties_per_year[i] = new L.geoJson(us_counties, {style: example_style, onEachFeature: onEachAdditionalCounty}).addTo(map);
+    }
     
     var map_us_states = new L.geoJson(us_states, {style: state_outline_style}).addTo(map);   // add US states
     
