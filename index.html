@@ -27,11 +27,14 @@
     <link rel="stylesheet" href="./Leaflet.zoomslider/L.Control.Zoomslider.css">
     <script src="./Leaflet.zoomslider/L.Control.Zoomslider.js"></script>
     
+    <!-- Leaflet.hash -->
+    <script src="./Leaflet.hash/leaflet-hash.js"></script>
+    
 </head>
 <body>
     <div id="map"></div>
     
-    <script src="data/24510_blocks_simple.js"></script> <!-- Baltimore Example Data -->
+    <script src="data/us_counties_20m.js"></script> <!-- Baltimore Example Data -->
     
     <script>
     /* BEGIN Tile Layer Definitions */
@@ -64,8 +67,9 @@
     // map defaults
     var default_basemap = [OpenStreetMap_Mapnik_Insecure];
     var BaltimoreMD = [39.2861, -76.6296];
-    var default_location = BaltimoreMD;
-    var default_zoom = 12;
+    var USA_view = [38.58,-97.91];
+    var default_location = USA_view;
+    var default_zoom = 4;
     
     // initialize the map
     var map = L.map('map', {
@@ -80,11 +84,42 @@
 
     // add a scale
     var map_scale = L.control.scale({position: 'bottomleft'}).addTo(map);
+
+
+    function getRandomColor() {
+      // creating a random number between 0 and 255
+      var r = Math.floor(Math.random() * 256);
+      var g = Math.floor(Math.random() * 256);
+      var b = Math.floor(Math.random() * 256);
+
+      // going from decimal to hex
+      var hexR = r.toString(16);
+      var hexG = g.toString(16);
+      var hexB = b.toString(16);
+
+      // making sure single character values are prepended with a "0"
+      if (hexR.length == 1) {
+        hexR = "0" + hexR;
+      }
+
+      if (hexG.length == 1) {
+        hexG = "0" + hexG;
+      }
+
+      if (hexB.length == 1) {
+        hexB = "0" + hexB;
+      }
+
+      // creating the hex value by concatenatening the string values
+      var hexColor = "#" + hexR + hexG + hexB;
+      
+      return hexColor.toUpperCase();
+    }
     
     
     function example_style(feature) {
     return {
-        fillColor: 'blue',
+        fillColor: getRandomColor(),
         weight: 0,
         opacity: 1,
         color: 'silver',
@@ -93,7 +128,9 @@
     };
 }
     
-    var map_bmorepop = new L.geoJson(blocksData, {style: example_style}).addTo(map);   // add Baltimore Example population
+    var map_bmorepop = new L.geoJson(us_counties, {style: example_style}).addTo(map);   // add Baltimore Example population
+    
+    var hash = new L.Hash(map); // Continually append the Center and Zoom to the base URL
     
     </script>
 </body>
