@@ -143,8 +143,13 @@
     }
     
     function onEachCounty(feature, layer) {
-        layer.bindPopup(feature.properties.NAME);
+        layer.bindPopup(feature.properties.NAME + "\n" + feature.properties.time);
     }
+
+    /* Generate a random year for every county as an example */
+    us_counties.features.forEach(function (item) {
+        item.properties.time = Math.floor(Math.random() * (2014 - 2002 + 1)) + 2002;
+    })
     
     var map_us_counties = new L.geoJson(us_counties, {style: example_style, onEachFeature: onEachCounty}).addTo(map);   // add US counties
     
