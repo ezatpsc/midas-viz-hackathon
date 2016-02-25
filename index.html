@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <!--
-    SIGMA Front End
+    Drug Poisoning Mortality in US Visualization
+    
     This is meant to be a standards-compliant HTML5 document
     Without the use of custom tags
         Due to concerns about backwards-compatibility
@@ -10,7 +11,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>SIGMA - Strategic Integrated Geospatial Mapping Application</title>
+    <title>Drug-related Poisonings</title>
     <link rel="icon" href="./images/favicon.png">
     <link rel="stylesheet" href="./css/main.css">
     
@@ -34,7 +35,8 @@
 <body>
     <div id="map"></div>
     
-    <script src="data/us_counties_20m.js"></script> <!-- Baltimore Example Data -->
+    <script src="data/us_counties_20m.js"></script> <!-- US County Data -->
+    <script src="data/us_states_20m.js"></script> <!-- US State Data -->
     
     <script>
     /* BEGIN Tile Layer Definitions */
@@ -86,6 +88,7 @@
     var map_scale = L.control.scale({position: 'bottomleft'}).addTo(map);
 
 
+    /* BEGIN RANDOM COLOR FUNCTION */
     function getRandomColor() {
       // creating a random number between 0 and 255
       var r = Math.floor(Math.random() * 256);
@@ -115,6 +118,7 @@
       
       return hexColor.toUpperCase();
     }
+    /*   END RANDOM COLOR FUNCTION */
     
     
     function example_style(feature) {
@@ -125,10 +129,26 @@
         color: 'silver',
         dashArray: '3',
         fillOpacity: 0.92
-    };
-}
+        };
+    }
     
-    var map_bmorepop = new L.geoJson(us_counties, {style: example_style}).addTo(map);   // add Baltimore Example population
+    
+    function state_outline_style(feature) {
+        return {
+            fill: false,
+            color: 'white',
+            dashArray: '5, 5',
+            weight: 2
+        };
+    }
+    
+    function onEachCounty(feature, layer) {
+        layer.bindPopup(feature.properties.NAME);
+    }
+    
+    var map_us_counties = new L.geoJson(us_counties, {style: example_style, onEachFeature: onEachCounty}).addTo(map);   // add US counties
+    
+    var map_us_states = new L.geoJson(us_states, {style: state_outline_style}).addTo(map);   // add US states
     
     var hash = new L.Hash(map); // Continually append the Center and Zoom to the base URL
     
