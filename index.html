@@ -29,7 +29,10 @@
     
 </head>
 <body>
-    <div id="map"></div>   
+    <div id="map"></div>
+    
+    <script src="data/24510_blocks_simple.js"></script> <!-- Baltimore Example Data -->
+    
     <script>
     /* BEGIN Tile Layer Definitions */
     if (! L.Browser.retina) {
@@ -78,12 +81,20 @@
     // add a scale
     var map_scale = L.control.scale({position: 'bottomleft'}).addTo(map);
     
-
     
-    //var map = new L.Map('map', {layers: default_basemaps, center: new L.LatLng(39.2861, -76.6296), zoom: 12});
+    function example_style(feature) {
+    return {
+        fillColor: 'blue',
+        weight: 0,
+        opacity: 1,
+        color: 'silver',
+        dashArray: '3',
+        fillOpacity: 0.92
+    };
+}
     
-
-
+    var map_bmorepop = new L.geoJson(blocksData, {style: example_style}).addTo(map);   // add Baltimore Example population
+    
     </script>
 </body>
 </html>
