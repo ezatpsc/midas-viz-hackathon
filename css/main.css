@@ -14,3 +14,26 @@ html, body, #map {
     width: 100%;
 }
 /*   END Fullscreen Leaflet */
+
+.legend {
+    position:absolute;
+    bottom:20px;
+    right:15px;
+    line-height: 18px;
+    color: #555;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+    padding:10px;
+    width:100px;
+    font: 12px/14px Arial, Helvetica, sans-serif;
+    line-height: 18px;
+    color: #555;
+}
+.legend i {
+    width: 18px;
+    height: 18px;
+    float: left;
+    margin-right: 8px;
+}
