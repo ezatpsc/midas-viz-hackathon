@@ -57,16 +57,6 @@
         });
     }
 
-    var CartoDB_Positron_Insecure = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}'+(L.Browser.retina? '@2x': '')+'.png', {
-        maxZoom: 19,
-        noWrap: true,
-        subdomains: 'abcd',
-        detectRetina: true,
-        //errorTileUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAJOgAACToAYJjBRwAAAAMSURBVBhXY2BgYAAAAAQAAVzN/2kAAAAASUVORK5CYII=',
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
-        //attribution: attribution
-    });
-
     var CartoDB_DarkMatter_Insecure = L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}'+(L.Browser.retina? '@2x': '')+'.png', {
         maxZoom: 19,
         noWrap: true,
@@ -78,7 +68,8 @@
     /*   END Tile Layer Definitions */
     
     // map defaults
-    var default_basemap = [CartoDB_Positron_Insecure];
+    var default_basemap = [OpenStreetMap_Mapnik_Insecure];
+    var BaltimoreMD = [39.2861, -76.6296];
     var USA_view = [38.58,-97.91];
     var default_location = USA_view;
     var default_zoom = 4;
@@ -137,46 +128,10 @@
             fill: false
         };
     }
-    
-    function getColorByDeathrate(feature) {
-        var out = 'cyan';
-        if (feature.properties.nodata) {
-            out = 'magenta'
-        }
-        switch (feature.properties.deathrate) {
-            case '0.0-2.0':
-                return '#7E72B4';
-            case '2.1-4.0':
-                return '#5A9FCA';
-            case '4.1-6.0':
-                return '#84CEB7';
-            case '6.1-8.0':
-                return '#BBE4B6';
-            case '8.1-10.0':
-                return '#D8F7AC';
-            case '10.1-12.0':
-                return '#EBF7AC';
-            case '12.1-14.0':
-                return '#FEE6A2';
-            case '14.1-16.0':
-                return '#FDBE80';
-            case '16.1-18.0':
-                return '#F68A68';
-            case '18.1-20.0':
-                return '#DD6472';
-            case '>20':
-                return '#B13367';
-            default:
-                return out; // in case of no data
-        }
-        
-        
-        return out;
-    }
 
     function example_style(feature) {
         return {
-            fillColor: getColorByDeathrate(feature),
+            fillColor: getRandomColor(),
             weight: 0,
             opacity: 1,
             color: 'silver',
@@ -210,14 +165,7 @@
         /*layer.bindPopup(feature.properties.NAME + "\n" + feature.properties.time);*/
         //feature.properties.time = getRandomYear();
         feature.properties.time = i
-        try
-        {
-            feature.properties.deathrate = county_data['county-data'][feature.properties.GEOID][i]['deathrate'];
-            feature.properties.nodata = false;
-        }
-        catch (error) {
-            feature.properties.nodata = true;
-        }
+        //feature.properties.deathrate = county_data['county-data'][feature.properties.GEOID][i]['deathrate'];
         layer.addTo(map_us_counties);
         layer.bindPopup(feature.properties.NAME + "\n" + feature.properties.time);
     }
@@ -241,7 +189,7 @@
     var map_us_counties = new L.geoJson(us_counties, {style: blank_style, onEachFeature: onEachCounty}).addTo(map);
     /*var map_us_counties = new L.geoJson(us_counties, {style: blank_style, onEachFeature: onEachCounty}).addTo(map);*/
     for (i = 2002; i < 2015; i++) {
-        counties_per_year[i] = new L.geoJson(us_counties, {style: example_style, onEachFeature: onEachAdditionalCounty});
+        counties_per_year[i] = new L.geoJson(us_counties, {style: example_style, onEachFeature: onEachAdditionalCounty}).addTo(map);
     }
     
     var map_us_states = new L.geoJson(us_states, {style: state_outline_style}).addTo(map);   // add US states
