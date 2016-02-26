@@ -22,11 +22,18 @@
     <link rel="stylesheet" href="./Leaflet/leaflet.css">
     <script src="./Leaflet/leaflet.js"></script>
     
+    <!-- JQuery -->
+    <script src="./jquery/jquery-1.12.0.js"></script>
+    
     <!-- insert plugins here -->
     
     <!-- Zoom slider -->
     <link rel="stylesheet" href="./Leaflet.zoomslider/L.Control.Zoomslider.css">
     <script src="./Leaflet.zoomslider/L.Control.Zoomslider.js"></script>
+    
+    <!-- Slider control -->
+    <link rel="stylesheet" href="./Leaflet.slider/leaflet-slider.css">
+    <script src="./Leaflet.slider/leaflet-slider.js"></script>
     
     <!-- Leaflet.hash -->
     <script src="./Leaflet.hash/leaflet-hash.js"></script>
@@ -38,6 +45,7 @@
     <script src="data/us_counties_20m.js"></script> <!-- US County Borders -->
     <script src="data/us_states_20m.js"></script> <!-- US State Borders -->
     <script src="data/county-pretty-print.js"></script> <!-- County Data -->
+    <script src="data/state-pretty-print.js"></script> <!-- State Data -->
     
     <script>
     /* BEGIN Tile Layer Definitions */
@@ -200,53 +208,68 @@
     }
     
     function onEachCounty(feature, layer) {
-        /*
-        feature.properties.time = getRandomYear();
-        layer.bindPopup(feature.properties.NAME + "\n" + feature.properties.time);
-        */
+        /* blank on purpose */
     }
 
     function onEachAdditionalCounty(feature, layer) {
-        /*layer.bindPopup(feature.properties.NAME + "\n" + feature.properties.time);*/
-        //feature.properties.time = getRandomYear();
-        feature.properties.time = i
+        feature.properties.year = year;
         try
         {
-            feature.properties.deathrate = county_data['county-data'][feature.properties.GEOID][i]['deathrate'];
+            feature.properties.deathrate = county_data['county-data'][feature.properties.GEOID][year]['deathrate'];
             feature.properties.nodata = false;
         }
         catch (error) {
             feature.properties.nodata = true;
         }
-        layer.addTo(map_us_counties);
-        layer.bindPopup(feature.properties.NAME + "\n" + feature.properties.time);
+        layer.bindPopup(feature.properties.NAME + "<br>" + feature.properties.year);
     }
 
-    
-    /* Generate a random year for every county as an example */
-    /*
-    us_counties.features.forEach(function (item) {
-        item.properties.time = Math.floor(Math.random() * (2014 - 2002 + 1)) + 2002;
-    });
-    */
-    
-    
-    /*
-    var map_us_counties = new L.geoJson(us_counties, {style: example_style, onEachFeature: onEachCounty}).addTo(map);   // add US counties
-    
-    var map_us_counties_1 = new L.geoJson(us_counties, {style: example_style, onEachFeature: onEachAdditionalCounty});
-    */
-    var i;
-    var counties_per_year = {};
-    var map_us_counties = new L.geoJson(us_counties, {style: blank_style, onEachFeature: onEachCounty}).addTo(map);
-    /*var map_us_counties = new L.geoJson(us_counties, {style: blank_style, onEachFeature: onEachCounty}).addTo(map);*/
-    for (i = 2002; i < 2015; i++) {
-        counties_per_year[i] = new L.geoJson(us_counties, {style: example_style, onEachFeature: onEachAdditionalCounty});
+    function onSliderChange(value) {
+        /*console.log(value);*/
+        map.removeLayer(counties_per_year[currentyear]);
+        currentyear = value;
+        year = value;
+        counties_per_year[year] = new L.geoJson(us_counties, {style: example_style, onEachFeature: onEachAdditionalCounty}).addTo(map);
     }
-    
-    var map_us_states = new L.geoJson(us_states, {style: state_outline_style}).addTo(map);   // add US states
-    
+
     var hash = new L.Hash(map); // Continually append the Center and Zoom to the base URL
+
+    var year, currentyear;
+    var counties_per_year = {};
+    
+    // add first layer
+    year = 2002;
+    currentyear = year;
+    counties_per_year[year] = new L.geoJson(us_counties, {style: example_style, onEachFeature: onEachAdditionalCounty}).addTo(map);
+    //year = 2003;
+    //counties_per_year[year] = new L.geoJson(us_counties, {style: example_style, onEachFeature: onEachAdditionalCounty}).addTo(map);
+    //todo hide counties_per_year[2003]
+    
+     // add US state outlines
+    var map_us_states = new L.geoJson(us_states, {style: state_outline_style}).addTo(map);
+    
+    
+    // add the year slider
+    yearSlider = L.control.slider(onSliderChange,{id:"yearSlider"});
+    yearSlider.options.position = "bottomleft"
+    yearSlider.options.orientation = "horizontal"
+    yearSlider.options.logo = "s"
+    yearSlider.options.increment = true
+    yearSlider.options.min = 2002
+    yearSlider.options.max = 2014
+    yearSlider.options.value = 2002
+    yearSlider.addTo(map);
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     </script>
 </body>
