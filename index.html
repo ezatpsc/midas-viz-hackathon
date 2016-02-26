@@ -266,17 +266,37 @@
     yearSlider.options.min = 2002
     yearSlider.options.max = 2014
     yearSlider.options.value = 2002
+    yearSlider.options.syncSlider = true
     yearSlider.addTo(map);
     
     
     // play/pause button directives
 
     var timerVariable;
+    var almostOver = false;
 
     function forwardTime()
     {
-
+        
         yearSlider._increment();
+        if (yearSlider.value == yearSlider.options.max.toString())
+         {
+            if (almostOver)
+            {
+                yearSlider.update = function (){};
+                for (var i=14; i>=2; i--)
+                {
+                    yearSlider._decrement();
+                }
+                yearSlider.update = onSliderChange;
+                almostOver = false;
+                lastyear = 2014;
+                year = 2002;
+                onSliderChange(year);
+            }
+            almostOver = true;
+         }
+
     }
 
      function switchButtons()
@@ -286,13 +306,15 @@
         if (playPause.innerHTML == '▶')
          {
             playPause.innerHTML = '▮▮';
-            timerVariable = setInterval(forwardTime,1000);
+            timerVariable = setInterval(forwardTime,3000);
          }
          else
          {
             playPause.innerHTML = '▶';
             clearInterval(timerVariable);
          }
+
+
 
      }
 
