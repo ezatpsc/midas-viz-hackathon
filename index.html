@@ -271,6 +271,14 @@
     
     // play/pause button directives
 
+    var timerVariable;
+
+    function forwardTime()
+    {
+
+        yearSlider._increment();
+    }
+
      function switchButtons()
      {
         var playPause = document.getElementById("playPause");
@@ -278,16 +286,18 @@
         if (playPause.innerHTML == '▶')
          {
             playPause.innerHTML = '▮▮';
+            timerVariable = setInterval(forwardTime,1000);
          }
          else
          {
             playPause.innerHTML = '▶';
+            clearInterval(timerVariable);
          }
 
      }
 
     var playPauseButton = L.easyButton( '<span id="playPause">&#9654;</span>', switchButtons);
-
+    playPauseButton.options.position = "bottomleft";
     playPauseButton.addTo(map);
 
     
