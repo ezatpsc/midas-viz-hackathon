@@ -37,6 +37,10 @@
     
     <!-- Leaflet.hash -->
     <script src="./Leaflet.hash/leaflet-hash.js"></script>
+
+    <!-- Leaflet.easyButton -->
+    <script src="./Leaflet.easyButton/easy-button.js"></script>
+    <link ref="stylesheet" href="./Leaflet.easyButton/easy-button.css">
     
 </head>
 <body>
@@ -261,7 +265,27 @@
     yearSlider.addTo(map);
     
     
-    
+    // play/pause button directives
+
+     function switchButtons()
+     {
+        var playPause = document.getElementById("playPause");
+
+        if (playPause.innerHTML == '▶')
+         {
+            playPause.innerHTML = '▮▮';
+         }
+         else
+         {
+            playPause.innerHTML = '▶';
+         }
+
+     }
+
+    var playPauseButton = L.easyButton( '<span id="playPause">&#9654;</span>', switchButtons);
+
+    playPauseButton.addTo(map);
+
     
     
     
