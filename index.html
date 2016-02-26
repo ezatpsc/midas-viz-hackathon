@@ -225,25 +225,29 @@
     }
 
     function onSliderChange(value) {
-        /*console.log(value);*/
-        map.removeLayer(counties_per_year[currentyear]);
-        currentyear = parseInt(yearSlider.value);
-        year = currentyear;
-        counties_per_year[year] = new L.geoJson(us_counties, {style: example_style, onEachFeature: onEachAdditionalCounty}).addTo(map);
+        console.log("last:" + lastyear + " " + "current: " + value);
+        year = value;
+        if (lastyear!=year) {
+            map.removeLayer(counties_per_year[lastyear]);
+            counties_per_year[year] = new L.geoJson(us_counties, {style: example_style, onEachFeature: onEachAdditionalCounty}).addTo(map);
+            counties_per_year[year].setStyle(example_style);
+            console.log("got: " + year);
+            map_us_states.bringToFront()
+        }
+        lastyear = year;
     }
 
     var hash = new L.Hash(map); // Continually append the Center and Zoom to the base URL
 
-    var year, currentyear;
+    var year, lastyear;
     var counties_per_year = {};
     
     // add first layer
     year = 2002;
-    currentyear = year;
+    lastyear = 2002;
     counties_per_year[year] = new L.geoJson(us_counties, {style: example_style, onEachFeature: onEachAdditionalCounty}).addTo(map);
-    //year = 2003;
-    //counties_per_year[year] = new L.geoJson(us_counties, {style: example_style, onEachFeature: onEachAdditionalCounty}).addTo(map);
-    //todo hide counties_per_year[2003]
+    counties_per_year[year].setStyle(example_style);
+    
     
      // add US state outlines
     var map_us_states = new L.geoJson(us_states, {style: state_outline_style}).addTo(map);
@@ -253,22 +257,12 @@
     yearSlider = L.control.slider(onSliderChange,{id:"yearSlider"});
     yearSlider.options.position = "bottomleft"
     yearSlider.options.orientation = "horizontal"
-    yearSlider.options.logo = "s"
+    yearSlider.options.logo = "yr"
     yearSlider.options.increment = true
     yearSlider.options.min = 2002
     yearSlider.options.max = 2014
     yearSlider.options.value = 2002
     yearSlider.addTo(map);
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     </script>
