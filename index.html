@@ -153,7 +153,7 @@
     function getColorByDeathrate(feature) {
         var out = 'cyan';
         if (feature.properties.nodata) {
-            out = 'magenta'
+            out = '#F5F5F3'
         }
         switch (feature.properties.deathrate) {
             case '0.0-2.0':
@@ -189,11 +189,11 @@
     function example_style(feature) {
         return {
             fillColor: getColorByDeathrate(feature),
-            weight: 0,
+            weight: 1,
             opacity: 1,
             color: 'silver',
             dashArray: '3',
-            fillOpacity: 0.92
+            fillOpacity: 1
         };
     }
     
@@ -237,6 +237,7 @@
             counties_per_year[year].setStyle(example_style);
             console.log("got: " + year);
             map_us_states.bringToFront()
+            $(".leaflet-control-slider-toggle").html(year)
         }
         lastyear = year;
     }
@@ -267,6 +268,8 @@
     yearSlider.options.max = 2014
     yearSlider.options.value = 2002
     yearSlider.addTo(map);
+    $(".leaflet-control-slider-toggle").html(year)
+    $(".leaflet-control-slider-toggle").css({"font-size":"1.1em"})
     
     
     // play/pause button directives
