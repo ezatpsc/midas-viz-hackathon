@@ -237,11 +237,30 @@
         {
             feature.properties.deathrate = county_data['county-data'][feature.properties.GEOID][year]['deathrate'];
             feature.properties.nodata = false;
+            
+            county = county_data['county-data'][feature.properties["GEOID"]][year].county
+            deathrate = feature.properties.deathrate
+            state = county_data['county-data'][feature.properties["GEOID"]][year].state
+            deaths = state_data['state-data'][state][year]["Deaths"]
+            population = state_data['state-data'][state][year]["Population"]
+            staterate = state_data['state-data'][state][year]["Age-adjusted Rate"]
+            stderr = state_data['state-data'][state][year]["Standard Error Age-adjusted Rate"]
+
+            popup = '<b>Year:</b>' + year + '<br>' +
+                    '<b>County: ' + county + '</b><br>' +
+                    '<b>County Death Rate:</b> ' + deathrate + '<br><br>' +
+                    '<b>State: ' + state + '</b><br>' +
+                    '<b>State Deaths:</b> ' + deaths + '<br>' +
+                    '<b>State Population:</b> ' + population + '<br>' +
+                    '<b>State Death Rate:</b> ' + staterate + '<br>' +
+                    '<b>Standard Error:</b> ' + stderr + '<br>'
+            
+            layer.bindPopup(popup);
         }
         catch (error) {
             feature.properties.nodata = true;
         }
-        layer.bindPopup(feature.properties.NAME + "<br>" + feature.properties.year);
+        
     }
 
     function onSliderChange(value) {
@@ -283,7 +302,6 @@
     yearSlider.options.min = 2002
     yearSlider.options.max = 2014
     yearSlider.options.value = 2002
-    yearSlider.options.syncSlider = true
     yearSlider.addTo(map);
     $(".leaflet-control-slider-toggle").html(year)
     $(".leaflet-control-slider-toggle").css({"font-size":"1.1em"})
@@ -292,30 +310,11 @@
     // play/pause button directives
 
     var timerVariable;
-    var almostOver = false;
 
     function forwardTime()
     {
-        
-        yearSlider._increment();
-        if (yearSlider.value == yearSlider.options.max.toString())
-         {
-            if (almostOver)
-            {
-                yearSlider.update = function (){};
-                for (var i=14; i>=2; i--)
-                {
-                    yearSlider._decrement();
-                }
-                yearSlider.update = onSliderChange;
-                almostOver = false;
-                lastyear = 2014;
-                year = 2002;
-                onSliderChange(year);
-            }
-            almostOver = true;
-         }
 
+        yearSlider._increment();
     }
 
      function switchButtons()
@@ -325,15 +324,13 @@
         if (playPause.innerHTML == '▶')
          {
             playPause.innerHTML = '▮▮';
-            timerVariable = setInterval(forwardTime,3000);
+            timerVariable = setInterval(forwardTime,1000);
          }
          else
          {
             playPause.innerHTML = '▶';
             clearInterval(timerVariable);
          }
-
-
 
      }
 
