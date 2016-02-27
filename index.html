@@ -11,7 +11,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Drug-related Poisonings</title>
+    <title>Drug Poisoning Mortality: US 2002-2014</title>
     <link rel="icon" href="./images/favicon.png">
     <link rel="stylesheet" href="./css/main.css">
     
@@ -47,7 +47,7 @@
     <div id="map"></div>
     
     <div class="legend">
-        <div><strong>Age-adjusted Death Rate:</strong></div>
+        <div><strong>Drug Poisoning Age-adjusted Death Rate per 100,000:</strong></div>
         <i style="background:#7E72B4"></i>>0.0-2.0<br>
         <i style="background:#5A9FCA"></i>2.1-4.0<br>
         <i style="background:#84CEB7"></i>4.1-6.0<br>
@@ -310,11 +310,30 @@
     // play/pause button directives
 
     var timerVariable;
+    var almostOver = false;
 
     function forwardTime()
     {
-
+        
         yearSlider._increment();
+        if (yearSlider.value == yearSlider.options.max.toString())
+         {
+            if (almostOver)
+            {
+                yearSlider.update = function (){};
+                for (var i=14; i>=2; i--)
+                {
+                    yearSlider._decrement();
+                }
+                yearSlider.update = onSliderChange;
+                almostOver = false;
+                lastyear = 2014;
+                year = 2002;
+                onSliderChange(year);
+            }
+            almostOver = true;
+         }
+
     }
 
      function switchButtons()
@@ -324,13 +343,15 @@
         if (playPause.innerHTML == '▶')
          {
             playPause.innerHTML = '▮▮';
-            timerVariable = setInterval(forwardTime,1000);
+            timerVariable = setInterval(forwardTime,3000);
          }
          else
          {
             playPause.innerHTML = '▶';
             clearInterval(timerVariable);
          }
+
+
 
      }
 
